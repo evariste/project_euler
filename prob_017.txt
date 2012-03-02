@@ -1,0 +1,61 @@
+If the numbers 1 to 5 are written out in words: one, two, three, four,
+five, then there are 3 + 3 + 5 + 4 + 4 = 19 letters used in total.
+
+If all the numbers from 1 to 1000 (one thousand) inclusive were
+written out in words, how many letters would be used?
+
+NOTE: Do not count spaces or hyphens. For example, 342 (three hundred
+and forty-two) contains 23 letters and 115 (one hundred and fifteen)
+contains 20 letters. The use of "and" when writing out numbers is in
+compliance with British usage.
+
+A: 21124
+
+onetwothreefourfivesixseveneightnine
+
+36 letters
+
+teneleventwelvethirteenfourteenfifteensixteenseventeeneighteennineteen
+
+70
+
+twentythirtyfortyfiftysixtyseventyeightyninety
+
+46
+
+From twenty to ninety nine : 10 * 46 + 8 * 36 [tens + units]
+     	       	      	      = 748
+
+From one to ninety nine : 36 + 70 + 748 = 854
+
+There are ten batches of one ... ninety nine
+
+[ 10 * 854 = 8540 ]
+
+hundred : 7
+
+one hundred
+..
+nine hundred
+
+36 + 9*7 = 36 + 63 = 99
+
+There are 100 numbers beginning with 'one hundred', 100 beginning with
+'two hundred' etc.
+
+[ 100 * 99 = 9,900 ]
+
+'and'
+
+3
+
+There are 99 numbers with an 'and' in each century starting at 100 ->
+
+[ 99 * 9 * 3 = 2673 ]
+
+
+'one thousand'
+
+[ 11 ]
+
+total [ 11 + 2673 + 9900 +  8540 = 21124 ]
