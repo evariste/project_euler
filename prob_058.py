@@ -21,20 +21,21 @@
 # continued, what is the side length of the square spiral for which
 # the ratio of primes along both diagonals first falls below 10%?
 
-# Solution: .
+# Solution: 26241.
+
 
 # Reading from the centre outwards, the numbers lying on the diagonals
 # are:
 
-# 1 3 13 31 : (2n)^2 - (2n-1) for n = 0, 1, 2, 3, .. 
-# 1 5 17 37 : 1 + (2n)^2      for n = 0, 1, 2, 3, ..
-# 1 7 21 43 : (2n)^2 + 2n + 1 for n = 0, 1, 2, 3, ..
-# 1 9 25 49 : (2n+1)^2        for n = 0, 1, 2, 3, ..
+# 1 3 13 31 : (2n)**2 - (2n-1) for n = 0, 1, 2, 3, .. 
+# 1 5 17 37 : 1 + (2n)**2      for n = 0, 1, 2, 3, ..
+# 1 7 21 43 : (2n)**2 + 2n + 1 for n = 0, 1, 2, 3, ..
+# 1 9 25 49 : (2n+1)**2        for n = 0, 1, 2, 3, ..
 #
 # 0 2  4  6  : Differences reading downwards.
  
 import sys
-import math
+from abcdPrimeUtils import *
 
 # Using a generator object
 def getCorners(n):
@@ -82,121 +83,25 @@ def getCornersC():
     diff += 2
 
 
-def isPrime(n):
-  if (n < 2):
-    return False
-  elif (n == 2):
-    return True
-  elif (not n & 1): # n is even
-    return False
-  else:
-    # Basic, test over possible odd divisors up to the approx square
-    # root of n
-    seq = [x for x in range(3, n/2, 2) if x*x < n+1]
-    for d in seq:
-      if n % d == 0:
-        return False
-  
-  return True
-
-
-def gen_primes():
-  """ Generate an infinite sequence of prime numbers.
-  """
-  # Maps composites to primes witnessing their compositeness.
-  # This is memory efficient, as the sieve is not "run forward"
-  # indefinitely, but only as long as required by the current
-  # number being tested.
-  #
-  D = {}  
-
-  # The running integer that's checked for primeness
-  q = 2  
-
+# Version D:
+# As with version C but only ignores the corner which is a square number
+def getCornersD():
+  # Give corners for square with edge length 1 + 2*num
+  num  = 1
+  a    = 1
+  diff = 2
   while True:
-    if q not in D:
-      # q is a new prime.
-      # Yield it and mark its first multiple that isn't
-      # already marked in previous iterations
-      # 
-      yield q        
-      D[q * q] = [q]
-    else:
-      # q is composite. D[q] is the list of primes that
-      # divide it. Since we've reached q, we no longer
-      # need it in the map, but we'll mark the next 
-      # multiples of its prime factors to prepare for larger
-      # numbers
-      # 
-      for p in D[q]:
-        D.setdefault(p + q, [ ]).append(p)
-      del D[q]
+    a += 8*num-6
+    yield [a, a+diff, a+2*diff] # Look, no 4th term (square)!
 
-    q += 1
-
-def gen_primesN(N):
-  """ Generate a sequence of prime numbers up to and possibly including N.
-  """
-  # Maps composites to primes witnessing their compositeness.
-  # This is memory efficient, as the sieve is not "run forward"
-  # indefinitely, but only as long as required by the current
-  # number being tested.
-  #
-  D = {}  
-
-  # The running integer that's checked for primeness
-  q = 2  
-
-  while q < N:
-    if q not in D:
-      # q is a new prime.
-      # Yield it and mark its first multiple that isn't
-      # already marked in previous iterations
-      # 
-      yield q        
-      D[q * q] = [q]
-    else:
-      # q is composite. D[q] is the list of primes that
-      # divide it. Since we've reached q, we no longer
-      # need it in the map, but we'll mark the next 
-      # multiples of its prime factors to prepare for larger
-      # numbers
-      # 
-      for p in D[q]:
-        D.setdefault(p + q, [ ]).append(p)
-      del D[q]
-
-    q += 1
-
-# 1 3 13 31 : (2n)^2 - (2n-1) for n = 0, 1, 2, 3, .. 
-# 1 5 17 37 : 1 + (2n)^2      for n = 0, 1, 2, 3, ..
-# 1 7 21 43 : (2n)^2 + 2n + 1 for n = 0, 1, 2, 3, ..
-# 1 9 25 49 : (2n+1)^2        for n = 0, 1, 2, 3, ..
-#
-# 0 2  4  6  : Differences reading downwards.
+    num += 1
+    diff += 2
 
 
-def firstn(g, n):
-  for i in range(n):
-    yield g.next()
+###################################################################
 
-def intsfrom(i):
-  while 1:
-    yield i
-    i = i + 1
+def mainSlowSlow(*args):
 
-def exclude_multiples(n, ints):
-  for i in ints:
-    if (i % n > 0): yield i
-
-def sieve(ints):
- while 1:
-   prime = ints.next()
-   yield prime
-   ints = exclude_multiples(prime, ints)
-
-
-def main(*args):
   x = 0
   currLen = 1
   primeCount = 0
@@ -204,15 +109,6 @@ def main(*args):
   # 9, 25 ...
   squareStart = 1
   total = 1
-
-  # 37 36 35 34 33 32 31
-  # 38 17 16 15 14 13 30
-  # 39 18  5  4  3 12 29
-  # 40 19  6  1  2 11 28 
-  # 41 20  7  8  9 10 27
-  # 42 21 22 23 24 25 26 
-  # 43 44 45 46 47 48 49
-
 
   for p in gen_primes():
     # which length square does current prime belong to?
@@ -248,6 +144,7 @@ def main(*args):
 
 
     
+###################################################################
 
     
 def mainSlowSlowSlow(*args):
@@ -258,7 +155,7 @@ def mainSlowSlowSlow(*args):
   sideLength = 1
 
   for s in getCornersC():
-    primeCount += len(filter(isPrime, s))
+    primeCount += len(filter(isPrime_Eratosthenes, s))
     totalCount += 4
     sideLength += 2
     percentagePrime = 100.0 * primeCount / totalCount 
@@ -266,6 +163,28 @@ def mainSlowSlowSlow(*args):
     if percentagePrime < 33:
       print primeCount, totalCount, sideLength
       print '%.2f' % percentagePrime
+      print
+      break
+
+###################################################################
+
+
+# Fastest uses Miller-Rabin Primality test
+def main(*args):
+  
+  # List starts of with central 1, not prime
+  primeCount = 0
+  totalCount = 1
+  sideLength = 1
+
+  for s in getCornersD():
+    primeCount += len(filter(isPrime_MillerRabin, s))
+    totalCount += 4
+    sideLength += 2
+
+    if primeCount < 0.1 * totalCount:
+      print primeCount, totalCount, sideLength
+      print '%.4f' % (primeCount * 100.0 / totalCount)
       print
       break
 
