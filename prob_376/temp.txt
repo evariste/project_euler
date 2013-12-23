@@ -1,0 +1,158 @@
+
+
+924 combinations found
+Graph details: 
+923 293541 0
+0
+29340 9780
+0
+
+8:
+
+Graph details: 
+1715 1049971 0
+0
+311358 103786
+0
+
+9:
+
+Graph details: 
+3002 3308825 0
+0
+2422248 807416
+0
+>~/private/euler
+>pa100@delores% emacs temp.py 
+
+[1]+  Stopped                 emacs temp.py
+>~/private/euler
+>pa100@delores% fg
+emacs temp.py
+>~/private/euler
+>pa100@delores% python temp.py 
+  File "temp.py", line 13
+    def test(maxPip)
+                   ^
+SyntaxError: invalid syntax
+>~/private/euler
+>pa100@delores% fg
+bash: fg: current: no such job
+>~/private/euler
+>pa100@delores% emacs temp.py 
+>~/private/euler
+>pa100@delores% python temp.py 
+  File "temp.py", line 92
+    for maxPip = range(1,6):
+               ^
+SyntaxError: invalid syntax
+>~/private/euler
+>pa100@delores% fg
+bash: fg: current: no such job
+>~/private/euler
+>pa100@delores% emacs temp.py 
+>~/private/euler
+>pa100@delores% python temp.py 
+max pip 1
+1 combinations found
+Graph details: 
+0 0 0
+0
+0 0
+0
+max pip 2
+7 combinations found
+Graph details: 
+6 8 0
+0
+0 0
+0
+max pip 3
+28 combinations found
+Graph details: 
+27 192 0
+0
+0 0
+0
+max pip 4
+84 combinations found
+Graph details: 
+84 2103 0
+0
+0 0
+0
+max pip 5
+210 combinations found
+Graph details: 
+210 14747 0
+0
+2304 768
+0
+>~/private/euler
+>pa100@delores% fg
+bash: fg: current: no such job
+>~/private/euler
+>pa100@delores% emacs temp.py 
+>~/private/euler
+>pa100@delores% python temp.py 
+max pip 1
+1 combinations found
+Graph details: 
+0 0 0
+0
+0 0
+0
+max pip 2
+7 combinations found
+Graph details: 
+6 8 0
+0
+0 0
+0
+max pip 3
+28 combinations found
+Graph details: 
+27 192 0
+0
+0 0
+0
+max pip 4
+84 combinations found
+Graph details: 
+84 2103 0
+0
+0 0
+0
+max pip 5
+210 combinations found
+Graph details: 
+210 14747 0
+0
+2304 768
+0
+max pip 6
+462 combinations found
+Graph details: 
+462 76465 0
+0
+27270 9090
+0
+
+
+768
+2 384
+2 2 192
+2 2 2 96
+2 2 2 2 2 2 2 2 3
+
+9090
+2 4545
+2 5 909
+2 3 3 5 101
+
+9780
+2 4890
+2 2 2445
+2 2 5 489
+2 3 3 5 163
+
