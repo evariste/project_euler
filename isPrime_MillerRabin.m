@@ -1,6 +1,5 @@
 function isPrime = isPrime_MillerRabin(n)
-
-
+% Use Miller-Rabin primality test.  Only definite up to a limit.
 
 % deal with particular cases:
 smallPs = [2 3 5 7 11 13 17 19 61];
@@ -66,7 +65,7 @@ end
 
 return
 
-function untitled2
+function testing
 
 isPrime_MillerRabin(7937)
 return

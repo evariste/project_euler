@@ -1,5 +1,6 @@
 import math
 import numpy
+import itertools
 
 
 def isPrime_Eratosthenes(n):
@@ -102,12 +103,11 @@ def isPrime_MillerRabin(n):
   return True
 
     
-
-
+    
 
 # Not great if numbers get very big.
 def gen_primes():
-  """ Generate an infinite sequence of prime numbers.
+  """ Generator object for an infinite sequence of prime numbers.
   """
   # Maps composites to primes witnessing their compositeness.
   # This is memory efficient, as the sieve is not "run forward"
@@ -142,7 +142,7 @@ def gen_primes():
 
 # Not great if numbers get very big.
 def gen_primesN(N):
-  """ Generate a sequence of prime numbers up to and possibly including N.
+  """ Generator object a sequence of prime numbers up to and possibly including N.
   """
   # Maps composites to primes witnessing their compositeness.
   # This is memory efficient, as the sieve is not "run forward"
@@ -174,4 +174,160 @@ def gen_primesN(N):
       del D[q]
 
     q += 1
+
+
+def getNPrimes(N):
+  """
+  Create a list of primes up to or equal to N and return it.
+  """
+  g = gen_primesN(N)
+  ps = []
+  for p in g:
+    ps = ps + [p]
+  return ps
+
+
+
+def primes_croft():
+    """    from pyprimes.py
+    Yield prime integers using the Croft Spiral sieve.
+
+    This is a variant of wheel factorisation modulo 30.
+    """
+    # Implementation is based on erat3 from here:
+    #   http://stackoverflow.com/q/2211990
+    # and this website:
+    #   http://www.primesdemystified.com/
+    # Memory usage increases roughly linearly with the number of primes seen.
+    # dict ``roots`` stores an entry x:p for every prime p.
+    for p in (2, 3, 5):
+        yield p
+    roots = {9: 3, 25: 5}  # Map d**2 -> d.
+    primeroots = frozenset((1, 7, 11, 13, 17, 19, 23, 29))
+    selectors = (1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0)
+    for q in itertools.compress(
+            # Iterate over prime candidates 7, 9, 11, 13, ...
+            itertools.islice(itertools.count(7), 0, None, 2),
+            # Mask out those that can't possibly be prime.
+            itertools.cycle(selectors)
+            ):
+        # Using dict membership testing instead of pop gives a
+        # 5-10% speedup over the first three million primes.
+        if q in roots:
+            p = roots[q]
+            del roots[q]
+            x = q + 2*p
+            while x in roots or (x % 30) not in primeroots:
+                x += 2*p
+            roots[x] = p
+        else:
+            roots[q*q] = q
+            yield q
+
+
+
+def factorise(n):
+    """From pyprimes.py
+
+    factorise(integer) -> yield factors of integer lazily
+
+    >>> list(factorise(3*7*7*7*11))
+    [(3, 1), (7, 3), (11, 1)]
+
+    Yields tuples of (factor, count) where each factor is unique and usually
+    prime, and count is an integer 1 or larger.
+
+    The factors are prime, except under the following circumstances: if the
+    argument n is negative, -1 is included as a factor; if n is 0 or 1, it
+    is given as the only factor. For all other integer n, all of the factors
+    returned are prime.
+    """
+    # TODO: check n is an integer , e.g.  if int(n + 0) != n
+
+    if n in (0, 1, -1):
+        yield (n, 1)
+        return
+    elif n < 0:
+        yield (-1, 1)
+        n = -n
+    assert n >= 2
+    for p in primes_croft():
+        if p*p > n: break
+        count = 0
+        while n % p == 0:
+            count += 1
+            n //= p
+        if count:
+            yield (p, count)
+    if n != 1:
+#         if __debug__:
+#             # The following test only occurs if assertions are on.
+#             if _EXTRA_CHECKS:
+#                 assert isprime(n), ('failed isprime test for %d' % n)
+        yield (n, 1)
+
+  
+
+def allFactors(n):
+  """
+  generate all the factors of n (i.e. including composite factors).
+  """
+  pFacs = list(factorise(n))
+
+  ps      = map(lambda (x,y): x, pFacs)
+  indices = map(lambda (x,y): y, pFacs)
+
+  nIndices = len(indices)
+
+  indicesAddOne = map(lambda x: x+1, indices)
+
+  nFactors = reduce(lambda x,y: x*y, indicesAddOne)
+
+  # Each element is a cumulative product of preceding values
+  cycleLengths = [1 for i in range(nIndices)]
+  for i in range(1, nIndices):
+    cycleLengths[i] = cycleLengths[i-1] * indicesAddOne[i-1]
+
+  # Loop over all combinations of indices.
+  for i in range(nFactors):
+    fac = 1
+    for j in range(nIndices):
+      currInd = (i / cycleLengths[j]) % indicesAddOne[j]
+      fac = fac * (ps[j] ** currInd)
+    yield  fac
+
+  # List comprehension, nicer but slower.
+  #   y = map(lambda x: i / x, cycleLengths)
+  #   y = zip(y, indicesAddOne)
+  #   y = map(lambda (a,b): a % b, y)
+  #   y = map(lambda (a,b): a ** b, zip(ps, y))
+  #   y = reduce(lambda a,b: a*b, y)
+  #   print y,
+
+
+def allFactorisations(n):
+  """
+  Generate all factorisations (ordered).
+  """
+  store = []
+  if isPrime_MillerRabin(n):
+    store.append([n])
+    yield [n]
+
+  for f in allFactors(n):
+
+    if f == 1 or f == n:
+      if [n] in store:
+        continue
+      store.append([n])
+      yield [n]
+      continue
+
+    for ff in allFactorisations(n / f):
+      fact = [f] + ff
+      fact.sort()
+      if fact in store:
+        continue
+      store.append(fact)
+      yield fact
 

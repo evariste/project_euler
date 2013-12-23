@@ -28,6 +28,9 @@ inds  = zeros(MAX_FACTORS, 1);
 i = 1;
 
 while n > 1 && i <= MAX_FACTORS
+  
+  % Should really pass a second argument here to say where to start looking
+  % from , currently it starts at 2 every time but we don't need to.
   pFac = getPrimeFactor(n);
 
   ind = 0;
