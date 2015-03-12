@@ -68,6 +68,7 @@ def comb_list_to_numeric(li):
   Convert a combination represented as a list of distinct numbers
   taken from {0, ..., N-1} into the combinadic number form.
   """
+
   c = 0  
   for n in li:
     c = c + (1 << n)
@@ -135,12 +136,18 @@ def combinations_numeric(N, k, startAfter = None):
     yield curr
 
 
-def combinations_as_lists(N, k):
+def combinations_as_lists(N, k, startAfter = None):
   """
   Enumerate the combinations of k elements chosen from N ( [0, .., N-1] ).
   Return them as lists.
   """
-  for c in combinations_numeric(N, k):
+
+  startAfterNumeric = None
+
+  if not startAfter == None:
+    startAfterNumeric = comb_list_to_numeric(startAfter)
+
+  for c in combinations_numeric(N, k, startAfterNumeric):
     yield comb_numeric_to_list(c)
 
 
