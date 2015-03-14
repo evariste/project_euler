@@ -2,10 +2,31 @@
 from math import *
 import fractions as fr
 
+# function extended_gcd(a, b)
+def gcd_ext(a,b):
+  """
+  Extended Euclidean algorithm.
+  If r is the gcd of a and b then we can solve the equation
+  x a + y b = r
+  for integers x and y
+  This function returns (x, y, r)
+  """
+  x, old_x = 0, 1
+  y, old_y = 1, 0
+  r, old_r = b, a
+  while not r == 0:
+    q = old_r / r
+    old_r, r = r, old_r - q * r
+    old_x, x = x, old_x - q * x
+    old_y, y = y, old_y - q * y
+  return (old_x, old_y, old_r)
+
+
+
 def sqrtToContinuedFraction(n):
   """
   A square root can be written as a continued fraction
-  
+
   sqrt(n) = a0 +  1
                  ---
                   a1 +  1
@@ -21,7 +42,7 @@ def sqrtToContinuedFraction(n):
 
   for example, writing r7 for sqrt(7), we have 2 < r7 < 3 so
 
-  r7 = 2 + (r7 - 2) = 2 + ( (r7 - 2) / 1 ) 
+  r7 = 2 + (r7 - 2) = 2 + ( (r7 - 2) / 1 )
      = 2 + 1 / (  1 / (r7 - 2) )
 
   here x = 1 and y = 2
@@ -48,11 +69,11 @@ def sqrtToContinuedFraction(n):
   """
   rootN = sqrt(n)
   a0 = int(floor(rootN))
-  
+
   if a0 * a0 == n:
     return [a0 , []]
-  
-  
+
+
   # term = x / (sqrt(n) - y)
   xy = [ (1, a0) ]
   a_rest = []
@@ -62,7 +83,7 @@ def sqrtToContinuedFraction(n):
 
     xCurr = n - yPrev * yPrev
     yCurr = xPrev * yPrev
-    
+
     d = fr.gcd(xPrev, yCurr)
     xCurr /= d
     yCurr /= d
@@ -93,9 +114,9 @@ def getConvergent(contFrac, steps):
   all 1 and that, after the first term, the sequence repeats.  I.e has
   the form:
 
-  b0 + 1 / (b1 + 1 / ( b2 + 1 / (b3 + ... 1 / (bk) ) ) 
+  b0 + 1 / (b1 + 1 / ( b2 + 1 / (b3 + ... 1 / (bk) ) )
 
-  or 
+  or
 
   [b0, [b1, b2, ..., bk] ]
 
@@ -105,8 +126,8 @@ def getConvergent(contFrac, steps):
   list is repeated infinitely.
 
   E.g. the 5th convergent for [ b0, [b1, b2, b3, b4, b5, ...] ] is
-   
-    b0 + 1 / (b1 + 1 / ( b2 + 1 / (b3 + 1 / (b4) ) ) 
+
+    b0 + 1 / (b1 + 1 / ( b2 + 1 / (b3 + 1 / (b4) ) )
 
     steps  convergent:               Return
      1       b0                      (b0, 1)
@@ -133,7 +154,7 @@ def getConvergent(contFrac, steps):
   # http://en.wikipedia.org/wiki/Fundamental_recurrence_formulas )
   #
   # A_n = b_n A_{n-1} + a_n A_{n-2}
-  # 
+  #
   # B_n = b_n B_{n-1} + a_n B_{n-2}
   #
   # in our case, a_n = 1 always
@@ -211,8 +232,9 @@ def approximateSqrtWithContFrac(contFrac, tol):
 
 #########################################
 
-# Return a list of digits of the square root of n to the required number of digits.
-# Also return the number of digits to the left of the point and a string representation.
+# Return a list of digits of the square root of n to the required
+# number of digits.  Also return the number of digits to the left of
+# the point and a string representation.
 
 # See method below and see also papers/squareRootsByBasicOps.pdf
 
@@ -330,28 +352,36 @@ def sqrtArbitraryPrecision(n, requiredDigits):
 
 
 
-"""
-http://johnkerl.org/doc/square-root.html
+"""http://johnkerl.org/doc/square-root.html
 
 ====================
 
 
 How to manually find a square root
 
-Here is an almost-forgotten art: one that, with the advent of electronic calculators, will likely survive to the twenty-first century only on paper and in the memories of oldsters.
+Here is an almost-forgotten art: one that, with the advent of
+electronic calculators, will likely survive to the twenty-first
+century only on paper and in the memories of oldsters.
 
-What is the number you want to find the square root of? Here's one we'll use:
+What is the number you want to find the square root of? Here's one
+we'll use:
 
 46656
 
-First, divide the number to be square-rooted into pairs of digits, starting at the decimal point. That is, no digit pair should straddle a decimal point. (For example, split 1225 into "12 25" rather than "1 22 5"; 6.5536 into "6. 55 36" rather than"6.5 53 6".)
+First, divide the number to be square-rooted into pairs of digits,
+starting at the decimal point. That is, no digit pair should straddle
+a decimal point. (For example, split 1225 into "12 25" rather than "1
+22 5"; 6.5536 into "6. 55 36" rather than"6.5 53 6".)
 
-Then you can put some lines over each digit pair, and a bar to the left, somewhat as in long division.
+Then you can put some lines over each digit pair, and a bar to the
+left, somewhat as in long division.
 
      +--- ---- ----
      | 4   66   56
 
-Find the largest number whose square is less than or equal to the leading digit pair. In this case, the leading digit pair is 4; the largest number whose square is less than or equal to 4 is 2.
+Find the largest number whose square is less than or equal to the
+leading digit pair. In this case, the leading digit pair is 4; the
+largest number whose square is less than or equal to 4 is 2.
 
 Put that number on the left side, and above the first digit pair.
 
@@ -368,7 +398,9 @@ Now square that number, and subtract from the leading digit pair.
      +----
        0
 
-Extend the left bracket; multiply the last (and only) digit of the left-hand number by 2, put it to the left of the difference you just calculated, and leave an empty decimal place next to it.
+Extend the left bracket; multiply the last (and only) digit of the
+left-hand number by 2, put it to the left of the difference you just
+calculated, and leave an empty decimal place next to it.
 
        2
      +--- ---- ----
@@ -377,7 +409,8 @@ Extend the left bracket; multiply the last (and only) digit of the left-hand num
      +----
  4_  | 0
 
-Then bring down the next digit pair and put it to the right of the difference.
+Then bring down the next digit pair and put it to the right of the
+difference.
 
        2
      +--- ---- ----
@@ -386,7 +419,12 @@ Then bring down the next digit pair and put it to the right of the difference.
      +----
  4_  | 0   66
 
-Find the largest number to put in this blank decimal place such that that number, times the number already there plus the decimal place, will be less than the current difference. For example, see if 1 * 41 is <= 66, then 2*42 <= 66, etc. In this case it's a 1. Put this number in the blank you left, and in the next decimal place on the result row on the top.
+Find the largest number to put in this blank decimal place such that
+that number, times the number already there plus the decimal place,
+will be less than the current difference. For example, see if 1 * 41
+is <= 66, then 2*42 <= 66, etc. In this case it's a 1. Put this number
+in the blank you left, and in the next decimal place on the result row
+on the top.
 
        2    1
      +--- ---- ----
@@ -407,7 +445,12 @@ Now subtract the product you just found.
      +--------
            25
 
-Now, repeat as before: Take the number in the left column (here, 41) and double its last digit (giving you 42). Copy this below in the left column, and leave a blank space next to it. (Double the last digit with carry: for example, if you had not 41 but 49, which is 40+9, you should copy down 40+18 which is 58.) Also, bring down the next digit pair on the right.
+Now, repeat as before: Take the number in the left column (here, 41)
+and double its last digit (giving you 42). Copy this below in the left
+column, and leave a blank space next to it. (Double the last digit
+with carry: for example, if you had not 41 but 49, which is 40+9, you
+should copy down 40+18 which is 58.) Also, bring down the next digit
+pair on the right.
 
        2    1
      +--- ---- ----
@@ -419,7 +462,8 @@ Now, repeat as before: Take the number in the left column (here, 41) and double 
      +--------
 42_        25   56
 
-Now, find the largest digit (call it #) such that 42# * # <= 2556. Here, it turns out that 426 * 6 = 2556 exactly.
+Now, find the largest digit (call it #) such that 42# * # <=
+2556. Here, it turns out that 426 * 6 = 2556 exactly.
 
        2    1    6
      +--- ---- ----
@@ -434,7 +478,9 @@ Now, find the largest digit (call it #) such that 42# * # <= 2556. Here, it turn
      +-------------
                  0
 
-When the difference is zero, you have an exact square root and you're done. Otherwise, you can keep finding more decimal places for as long as you want.
+When the difference is zero, you have an exact square root and you're
+done. Otherwise, you can keep finding more decimal places for as long
+as you want.
 
 Here is another example, with less annotation.
 
@@ -471,4 +517,5 @@ kerl.john.r@gmail.com
        1
 
 2u     2  37
+
 """
