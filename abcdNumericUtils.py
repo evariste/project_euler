@@ -138,6 +138,9 @@ def getConvergent(contFrac, steps):
 
   b0, b_rest = contFrac
 
+  if steps < 1:
+    return None
+
   if steps == 1:
     return (b0, 1)
 
