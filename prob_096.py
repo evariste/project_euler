@@ -90,14 +90,14 @@ def setCellInds():
 Read the grids in the given text file into a numpy array 
 """
 def getGrids():
-    solve = file('prob_096_sudoku.txt')
+    f = file('prob_096_sudoku.txt')
     
     allGrids = np.zeros( (9,9,50), dtype=np.int8 )
     
-    lines = list(solve)
+    lines = list(f)
     # Pesky new lines
     lines = map(lambda x: x.replace('\n', ''), lines)
-    solve.close()        
+    f.close()        
     
     i = 0
     while i < len(lines):
