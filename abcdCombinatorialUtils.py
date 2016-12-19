@@ -45,11 +45,56 @@ def nPartitions(n):
 
 #############################################
 
+def generate_subsets(L):
+  '''
+  Return all subsets of list L. The empty set is included.
+  '''
+
+  if len(L) == 0:
+    yield L
+  else:
+    lastElt = L[-1]
+    L2 = filter(lambda x: not x == lastElt, L)
+    count = len(L) - len(L2)
+
+    M = [[]]
+    for i in range(count):
+      M.append( (1+i) * [lastElt] )
+
+    for i in range(count+1):
+      for ss in generate_subsets(L2):
+        yield ss + M[i]
+
+
+def generate_subsets_given_size(L, sz):
+  '''
+  Return all subsets of list L. The empty set is included.
+  '''
+
+  if sz < 1:
+    return
+
+  if len(L) == 0:
+    return
+  else:
+    lastElt = L[-1]
+    L2 = filter(lambda x: not x == lastElt, L)
+    count = len(L) - len(L2)
+
+    M = [[]]
+    for i in range(count):
+      M.append( (1+i) * [lastElt] )
+
+    for i in range(count+1):
+      for ss in generate_subsets(L2):
+        setFound = ss + M[i]
+        if len(setFound) == sz:
+          yield setFound
 
 def comb_numeric_to_list(c):
   """
   The binary representation of the number given shows which numbers
-  from the set {0, .., N} are in the combination.  The number given
+  from the set {0, .., N-1} are in the combination.  The number given
   is sometimes called a 'combinadic' and is part of the
   'combinatorial number system.
   """
@@ -68,6 +113,7 @@ def comb_list_to_numeric(li):
   Convert a combination represented as a list of distinct numbers
   taken from {0, ..., N-1} into the combinadic number form.
   """
+  # TODO: Ensure duplicates ignored if given.
 
   c = 0  
   for n in li:
@@ -104,10 +150,14 @@ def combinations_numeric(N, k, startAfter = None):
       return
     curr = startAfter
     count = 1
-    
+
   # Based on the method described in Wikipedia for getting one binary
   # combinadic from the previous
   # one. http://en.wikipedia.org/wiki/Combinatorial_number_system
+
+  if curr == last:
+    yield last
+
   while curr < last:
     if count == 0:
       count += 1
@@ -157,7 +207,7 @@ def comb_to_comb_with_reps(c):
   Input: a combination represented in numeric form.  Output: a
   combination represented in list form with repeated elements allowed,
   also known as a multiset.
-  
+
   If the input is a combination of size k chosen from N elements, then
   c is viewed as a multiset of size k chosen from among N-k+1
   elements.
@@ -221,7 +271,7 @@ def comb_to_comb_with_reps(c):
 # for c in itertools.combinations(S, k):
 #   c = list(c)
 #   c.sort()
-  
+
 #   print c
 #   sum = 0
 #   for i in range(len(c)):
